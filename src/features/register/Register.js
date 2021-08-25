@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { nanoid } from '@reduxjs/toolkit'
+import { addUser } from '../users/usersSlice'
 import { Controller, useForm } from 'react-hook-form'
 import { SKILLS_LIST } from '../../app/constants'
 
@@ -6,6 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
+import Swal from 'sweetalert2'
 
 import styles from './Register.module.css'
 import Card from 'react-bootstrap/Card'
@@ -16,22 +20,58 @@ const animatedComponents = makeAnimated()
 function Register() {
 	const [skills, setSkills] = useState([])
 
+	const dispatch = useDispatch()
+
 	const {
 		control,
 		register,
 		handleSubmit,
 		reset: resetForm,
-		formState: { errors },
-	} = useForm()
+		formState: { errors, isSubmitSuccessful },
+	} = useForm({
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			birthdate: new Date(),
+			skills: [],
+		},
+	})
 
-	// This explicit function declaration is only for better readability
-	// and can be moved to Select component props
-	const getSkillsOptions = () => {
-		return SKILLS_LIST.filter((item) => !skills.includes(item))
-	}
+	// Reset form on submission
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			resetForm()
+
+			setSkills([])
+
+			Swal.fire({
+				position: 'bottom-right',
+				toast: true,
+				icon: 'success',
+				title: 'Congrats! Your new user was added to our list of doom!',
+				showConfirmButton: false,
+				showCloseButton: true,
+				timer: 4000,
+				timerProgressBar: true,
+			})
+		}
+	}, [isSubmitSuccessful, resetForm])
 
 	const registerHandler = (formValues) => {
-		console.log(formValues)
+		const newUserData = {
+			id: nanoid(),
+			firstName: formValues.firstName,
+			lastName: formValues.lastName,
+			birthdate: formValues.birthdate,
+			skills: formValues.skills.map((skill) => {
+				return {
+					title: skill.label,
+					level: formValues[skill.value],
+				}
+			}),
+		}
+
+		dispatch(addUser(newUserData))
 	}
 
 	return (
@@ -149,7 +189,6 @@ function Register() {
 														'Please choose a date.',
 												},
 											}}
-											defaultValue={new Date()}
 											render={({ field }) => (
 												<DatePicker
 													selected={field.value}
@@ -205,6 +244,10 @@ function Register() {
 													components={
 														animatedComponents
 													}
+													onChange={(values) => {
+														setSkills(values)
+														field.onChange(values)
+													}}
 													options={SKILLS_LIST}
 													placeholder="Select your skills..."
 												/>
@@ -218,6 +261,130 @@ function Register() {
 										)}
 									</div>
 								</div>
+
+								{/* 
+									•••••••
+									List of Skills
+									•••••••
+								*/}
+
+								{skills.length > 0
+									? skills.map((skill, idx) => {
+											return (
+												<div
+													key={`${skill.label}` + idx}
+													className={`row form-group mt-3 ${styles.register_skills_item}`}
+												>
+													<div className="col-3">
+														<label>
+															{skill.label}
+														</label>
+													</div>
+
+													<div className="col-9">
+														<Controller
+															name={skill.value}
+															control={control}
+															// TODO:
+															// This line is causing a problem on item removal
+															// Needs to be fixed later.
+															defaultValue="Intermediate"
+															render={({
+																field,
+															}) => (
+																<>
+																	<div className="form-check form-check-inline">
+																		<input
+																			type="radio"
+																			name={
+																				field.name
+																			}
+																			id={`${skill.value}_beginnerRadio`}
+																			value="Beginner"
+																			onChange={(
+																				e
+																			) =>
+																				field.onChange(
+																					e
+																						.target
+																						.value
+																				)
+																			}
+																			onBlur={
+																				field.onBlur
+																			}
+																			className="form-check-input"
+																		/>
+																		<label
+																			className="form-check-label"
+																			htmlFor={`${skill.value}_beginnerRadio`}
+																		>
+																			Beginner
+																		</label>
+																	</div>
+
+																	<div className="form-check form-check-inline">
+																		<input
+																			type="radio"
+																			name={
+																				field.name
+																			}
+																			id={`${skill.value}_intermediateRadio`}
+																			value="Intermediate"
+																			onChange={(
+																				e
+																			) =>
+																				field.onChange(
+																					e
+																						.target
+																						.value
+																				)
+																			}
+																			defaultChecked="true"
+																			className="form-check-input"
+																		/>
+																		<label
+																			className="form-check-label"
+																			htmlFor={`${skill.value}_intermediateRadio`}
+																		>
+																			Intermediate
+																		</label>
+																	</div>
+
+																	<div className="form-check form-check-inline">
+																		<input
+																			type="radio"
+																			name={
+																				field.name
+																			}
+																			id={`${skill.value}_advancedRadio`}
+																			value="Advanced"
+																			onChange={(
+																				e
+																			) =>
+																				field.onChange(
+																					e
+																						.target
+																						.value
+																				)
+																			}
+																			className="form-check-input"
+																		/>
+																		<label
+																			className="form-check-label"
+																			htmlFor={`${skill.value}_advancedRadio`}
+																		>
+																			Advanced
+																		</label>
+																	</div>
+																</>
+															)}
+														/>
+													</div>
+												</div>
+											)
+									  })
+									: false}
 
 								{/* 
 									•••••••

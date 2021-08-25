@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import Header from './layouts/Header'
-import Home from './features/home/Home'
+import Users from './features/users/Users'
 import Register from './features/register/Register'
 import './App.css'
 
@@ -22,10 +22,10 @@ function App() {
 					<Route
 						exact
 						path={'/'}
-						render={() => <Redirect to="/home" />}
+						render={() => <Redirect to="/users" />}
 					/>
-					<Route exact path={'/home'}>
-						<Home />
+					<Route exact path={'/users'}>
+						<Users />
 					</Route>
 					<Route exact path={'/register'}>
 						<Register />

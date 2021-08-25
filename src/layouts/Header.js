@@ -15,13 +15,13 @@ function Header() {
 					<Nav className="me-auto">
 						<Nav.Item>
 							<NavLink
-								to="/home"
+								to="/users"
 								className="nav-link"
 								activeStyle={{
 									borderBottom: '2px solid #37474F',
 								}}
 							>
-								Home
+								Users
 							</NavLink>
 						</Nav.Item>
 						<Nav.Item>
