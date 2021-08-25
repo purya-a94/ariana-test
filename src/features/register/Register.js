@@ -62,7 +62,7 @@ function Register() {
 			id: nanoid(),
 			firstName: formValues.firstName,
 			lastName: formValues.lastName,
-			birthdate: formValues.birthdate,
+			birthdate: formValues.birthdate.toDateString(),
 			skills: formValues.skills.map((skill) => {
 				return {
 					title: skill.label,
