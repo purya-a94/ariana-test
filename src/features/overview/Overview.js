@@ -101,10 +101,16 @@ function Overview() {
 		<div className="container pt-3">
 			<div className="row justify-content-center">
 				<div className="col-12 col-md-8">
-					<Bar
-						data={chartConfig.data}
-						options={chartConfig.options}
-					/>
+					{usersList.length ? (
+						<Bar
+							data={chartConfig.data}
+							options={chartConfig.options}
+						/> // No data view
+					) : (
+						<div className="w-100 text-center">
+							No data available for now.
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
