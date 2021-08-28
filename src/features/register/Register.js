@@ -17,6 +17,10 @@ import Card from 'react-bootstrap/Card'
 // React-select animated components requirement
 const animatedComponents = makeAnimated()
 
+// A simple validator for spaces
+const trapSpacesForRequiredFields = (value) =>
+	!!value.trim() || 'Spaces alone are not valid!'
+
 function Register() {
 	const [skills, setSkills] = useState([])
 
@@ -60,8 +64,8 @@ function Register() {
 	const registerHandler = (formValues) => {
 		const newUserData = {
 			id: nanoid(),
-			firstName: formValues.firstName,
-			lastName: formValues.lastName,
+			firstName: formValues.firstName.trim(),
+			lastName: formValues.lastName.trim(),
 			birthdate: formValues.birthdate.toDateString(),
 			skills: formValues.skills.map((skill) => {
 				return {
@@ -82,6 +86,7 @@ function Register() {
 						<Card.Header className="text-center">
 							Registration Form
 						</Card.Header>
+
 						<Card.Body>
 							<Card.Title>Register your new user:</Card.Title>
 
@@ -114,6 +119,8 @@ function Register() {
 													message:
 														'Enter at least 2 characters.',
 												},
+												validate:
+													trapSpacesForRequiredFields,
 											})}
 											className="form-control"
 										/>
@@ -153,6 +160,8 @@ function Register() {
 													message:
 														'Enter at least 2 characters.',
 												},
+												validate:
+													trapSpacesForRequiredFields,
 											})}
 											className="col-12 col-sm-8 form-control"
 										/>

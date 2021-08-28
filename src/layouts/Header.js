@@ -35,6 +35,17 @@ function Header() {
 								Register
 							</NavLink>
 						</Nav.Item>
+						<Nav.Item>
+							<NavLink
+								to="/overview"
+								className="nav-link"
+								activeStyle={{
+									borderBottom: '2px solid #37474F',
+								}}
+							>
+								Overview
+							</NavLink>
+						</Nav.Item>
 					</Nav>
 				</Navbar.Collapse>
 			</Container>
