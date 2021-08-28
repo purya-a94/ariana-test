@@ -9,6 +9,7 @@ import {
 import Header from './layouts/Header'
 import Users from './features/users/Users'
 import Register from './features/register/Register'
+import Overview from './features/overview/Overview'
 import './App.css'
 
 import Col from 'react-bootstrap/Col'
@@ -29,6 +30,9 @@ function App() {
 					</Route>
 					<Route exact path={'/register'}>
 						<Register />
+					</Route>
+					<Route exact path={'/overview'}>
+						<Overview />
 					</Route>
 
 					<Route
